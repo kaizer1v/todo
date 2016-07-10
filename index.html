@@ -6,25 +6,9 @@
 </head>
 <body>
 
-  <form class="todo-form" action="/todo/add" method="post">
-    <input name='todo_text' type='text' id='todo_text' />
-    <button id='todo-add'>click me</button>
-  </form>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-$(function() {
-  $('#todo-add').on('click', function () {
-    var todo_text = $('#todo_text').val();
-    $.ajax({
-      'url': '/todo/add',
-      'type': 'POST',
-      'data': $('form').serialize(),
-      success: function (response) {
-        console.log(response);
-      }
-    });
-  });
-});
+
 </script>
 </body>
 </html>

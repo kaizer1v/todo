@@ -1,78 +1,76 @@
 import json
 from flask import Flask
-from flask import render_template
 from flask import request
+from flask import jsonify
+from flask import abort
+from flask import make_response
+from flask import request
+
+app = Flask(__name__)
 
 with open('data.json') as handle:
 	data = json.load(handle)
 
-app = Flask(__name__)
+# print(type(data), data)
 
+# Get all tasks (default)
+@app.route('/', methods=['GET'])
+def get_tasks():
+	return jsonify({ 'tasks': data })
 
-@app.route('/')
-def get_all():
-	return json.dumps(data)
-	# return render_template('index.html')
+# Get a specific task by id
+@app.route('/tasks/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+	task = [task for task in data if task['id'] == task_id]
+	if len(task) == 0: abort(404)
+	return jsonify({'task': task[0]})
 
-@app.route('/todo')
-def get_todo_all():
-	return json.dumps(data['todo'])
+# Error 404
+# -> todo: redirect to a saperate page
+@app.errorhandler(404)
+def not_found(error):
+	return make_response(jsonify({ 'error': '404 Not Found' }))
 
-@app.route('/todo/<task_id>')
-def get_todo(task_id):
-	# return json.dumps([ d for d in data['todo'] if d['id'] == task_id ])
-	return task_id
+# Add new task and get back the added task
+@app.route('/tasks', methods=['POST'])
+def create_task():
+	if not request.json or not 'title' in request.json:
+		abort(404)
+	new_task = {
+		'id': data[-1]['id'] + 1,
+		'title': request.json['title'],
+		'desc': request.json.get('desc', ""),
+		'status': False
+	}
+	data.append(new_task)
+	with open('data.json', 'w') as handle:
+		json.dump(data, handle)
+	return jsonify({ 'tasks': new_task }), 201
 
-@app.route('/todo/add', methods=['POST'])
-def add_todo():
-	# here todo_task is the 'name' attribute of the text field in the html form
-	todo_task = request.form['todo_task'];
-	return todo_task
+# Update an existing task by id
+@app.route('/tasks/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+	task = [task for task in data if task['id'] == task_id]
+	if len(task) == 0: abort(404)
+	if not request.json: abort(404)
+	if 'title' in request.json and type(request.json['title']) != unicode: abort(404)
+	if 'desc' in request.json and type(request.json['desc']) is not unicode: abort(404)
+	if 'status' in request.json and type(request.json['status']) is not bool: abort(404)
+	task[0]['title'] = request.json.get('title', task[0]['title'])
+	task[0]['desc'] = request.json.get('desc', task[0]['desc'])
+	task[0]['status'] = request.json.get('status', task[0]['status'])
+	return jsonify({ 'task': task[0] })
 
-## ============ COMPLETED
+# Delete an existing task by id
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+	task = [task for task in data if task['id'] == task_id]
+	if len(task) == 0: abort(404)
+	data.remove(task[0])
+	with open('data.json', 'w') as handle:
+		json.dump(data, handle)
+	return jsonify({ 'result': True })
 
-@app.route('/completed')
-def get_completed_all():
-	return json.dumps(data['completed'])
-
-@app.route('/completed/<task_id>')
-def get_completed(task_id):
-	# return json.dumps([ d for d in data['completed'] if d['id'] == task_id ])
-	return task_id
-
-# print(data)
-# suppose we have the data in the 'data' variable
-#
-# class get_todo_task:
-# 	def GET(self, task_id):
-# 		return [ d for d in data['todo'] if d['id'] == task_id ]
-#
-# class get_todo:
-# 	def GET(self):
-# 		return data['todo']
-#
-# class add_todo:
-# 	def GET(self):
-# 		return web.input()
-#
-# class get_completed_task:
-# 	def GET(self, task_id):
-# 		return [ d for d in data['completed'] if d['id'] == task_id ]
-#
-# class get_completed:
-# 	def GET(self):
-# 		return data['completed']
-#
-# class get_todo_count():
-# 	def GET(self):
-# 		return len(data['todo'])
-#
-# class get_completed_count():
-# 	def GET(self):
-# 		return len(data['completed'])
-#
-# # print(get_todo())
-#
 if __name__ == '__main__':
-	# app = web.application(urls, globals())
+	app.debug = True
 	app.run()
