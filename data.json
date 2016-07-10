@@ -1,0 +1,24 @@
+{
+	"todo": [
+		{
+			"id": 1,
+			"task": "Make todo app",
+			"desc": "Also add to github for collaboration",
+			"date": ""
+		},
+		{
+			"id": 2,
+			"task": "Have lunch!",
+			"desc": "Order from swiggy",
+			"date": ""
+		}
+	],
+	"completed": [
+		{
+			"id": 1,
+			"task": "Buy brush and tongue cleaner",
+			"desc": "",
+			"date": ""
+		}
+	]
+}
