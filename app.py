@@ -6,14 +6,19 @@ from flask import abort
 from flask import make_response
 from flask import request
 from flask import url_for
+from flask import render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 
 '''Open the data.json where all todo items are saved and load into an object'''
 with open('data.json') as handle:
 	data = json.load(handle)
 
 # print(type(data), data)
+
+@app.route('/sample', methods=['GET'])
+def sample():
+	return render_template('sample.html', tasks=data)
 
 # Get all tasks (default)
 @app.route('/', methods=['GET'])
@@ -28,7 +33,7 @@ def get_tasks():
 def get_task(task_id):
 	task = [task for task in data if task['id'] == task_id]
 	if len(task) == 0: abort(404)
-	return jsonify({'task': task[0]})
+	return jsonify({'task': permalinks(task[0])})
 
 # Add new task and get back the added task
 @app.route('/tasks', methods=['POST'])
@@ -101,5 +106,4 @@ def permalinks(task):
 	return new_task
 
 if __name__ == '__main__':
-	app.debug = True
-	app.run()
+	app.run(debug = True)
