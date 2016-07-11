@@ -5,9 +5,11 @@ from flask import jsonify
 from flask import abort
 from flask import make_response
 from flask import request
+from flask import url_for
 
 app = Flask(__name__)
 
+'''Open the data.json where all todo items are saved and load into an object'''
 with open('data.json') as handle:
 	data = json.load(handle)
 
@@ -16,7 +18,10 @@ with open('data.json') as handle:
 # Get all tasks (default)
 @app.route('/', methods=['GET'])
 def get_tasks():
-	return jsonify({ 'tasks': data })
+	'''
+	Get all the tasks in the database
+	'''
+	return jsonify({ 'tasks': [permalinks(task) for task in data] })
 
 # Get a specific task by id
 @app.route('/tasks/<int:task_id>', methods=['GET'])
@@ -25,15 +30,12 @@ def get_task(task_id):
 	if len(task) == 0: abort(404)
 	return jsonify({'task': task[0]})
 
-# Error 404
-# -> todo: redirect to a saperate page
-@app.errorhandler(404)
-def not_found(error):
-	return make_response(jsonify({ 'error': '404 Not Found' }))
-
 # Add new task and get back the added task
 @app.route('/tasks', methods=['POST'])
 def create_task():
+	'''
+	Add a new task and update the database
+	'''
 	if not request.json or not 'title' in request.json:
 		abort(404)
 	new_task = {
@@ -50,6 +52,9 @@ def create_task():
 # Update an existing task by id
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
+	'''
+	Given a task id, update its fields with appropriate data
+	'''
 	task = [task for task in data if task['id'] == task_id]
 	if len(task) == 0: abort(404)
 	if not request.json: abort(404)
@@ -64,12 +69,36 @@ def update_task(task_id):
 # Delete an existing task by id
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
+	'''
+	Given a task id, remove the task and update the database
+	'''
 	task = [task for task in data if task['id'] == task_id]
 	if len(task) == 0: abort(404)
 	data.remove(task[0])
 	with open('data.json', 'w') as handle:
 		json.dump(data, handle)
 	return jsonify({ 'result': True })
+
+# Error 404
+# -> todo: redirect to a saperate page
+@app.errorhandler(404)
+def not_found(error):
+	'''Generate a json object for 404 response as well'''
+	return make_response(jsonify({ 'error': '404 Not Found' }))
+
+# This is to generate perma-links
+def permalinks(task):
+	'''
+	Given a task obj, replace its id
+	with a permalink (url)
+	'''
+	new_task = {}
+	for field in task:
+		if field == 'id':
+			new_task['url'] = url_for('get_task', task_id=task['id'], _external=True)
+		else:
+			new_task[field] = task[field]
+	return new_task
 
 if __name__ == '__main__':
 	app.debug = True
