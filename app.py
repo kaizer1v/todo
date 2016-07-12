@@ -41,7 +41,8 @@ def create_task():
 	'''
 	Add a new task and update the database
 	'''
-	if not request.json or not 'title' in request.json:
+	# print(request.get_json(force=True))
+	if not request.get_json(force=True) or not 'title' in request.get_json(force=True):
 		abort(404)
 	new_task = {
 		'id': data[-1]['id'] + 1,

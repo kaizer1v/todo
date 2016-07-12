@@ -7,12 +7,28 @@
 </head>
 <body>
     <p>Anything that is written here will be shown on the browser</p>
+    <ul id='todo'>
+        <!-- <li><input type='checkbox' value='have lunch' />Have lunch</li> -->
+    </ul>
+    
+    <ul id='completed'>
+        <!-- <li><input type='checkbox' checked value='join gramener' /><strike>Join Gramener</strike></li> -->
+    </ul>
+
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 $(function() {
+    getAll();
+
     function getAll() {
         $.ajax({ 'url': '/' }).done(function (result) {
-            console.log(result);
+            $.each(result.tasks, function (index, item) {
+                if(item.status == true) {
+                    $('#todo').append("<li><input type='checkbox' value='"+ item.title.toLowerCase() +"' />"+ item.title +"</li>");
+                } else {
+                    $('#completed').append("<li><input type='checkbox' checked value='"+ item.title.toLowerCase() +"' /><strike>"+ item.title +"</strike></li>");
+                }
+            })
         });
     }
 
@@ -22,8 +38,39 @@ $(function() {
         });
     }
 
-    getOne(2);
-})
+    function addTask(task) {
+        $.ajax({
+            url: '/tasks',
+            type: 'post',
+            data: task,
+            dataType: 'application/json',
+            success: function (result) {
+                console.log(result);
+            }
+        });
+    }
+
+    // Sample for adding a new task
+    // var newTask = {
+    //     'title': 'Do some Ajax',
+    //     'desc': 'This is actually an ajax POST request'
+    // }
+    // addTask(JSON.stringify(newTask));
+
+    $('ul').on('click', 'li > input[type=checkbox]', function() {
+        if($(this).is(':checked') === true) {
+            // move to completed section and remove from this list
+            var temptxt = $(this).closest('li').text();
+            $('#completed').prepend("<li><input type='checkbox' checked value='"+ temptxt.toLowerCase() +"' /><strike>"+ temptxt +"</strike></li>");
+            $(this).closest('li').remove();
+        } if($(this).is(':checked') === false) {
+            var temptxt = $(this).closest('li').text();
+            $('#todo').prepend("<li><input type='checkbox' value='"+ temptxt.toLowerCase() +"' />"+ temptxt +"</li>");
+            $(this).closest('li').remove();
+        }
+        
+    });
+});
 </script>
 </body>
 </html>
