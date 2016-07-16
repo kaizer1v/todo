@@ -17,15 +17,17 @@ All todo items i.e. database is stored as .json file within your application (/)
 
 ### API Reference
 
-*/*
+URL = **/**
+
 By default you will get all the todo items, completed as well as yet to be completed ones.
 
-*/tasks/<id>*
+URL = **/tasks/<id>**
+
 - GET = The url with the 'GET' http method will allow you to retreieve all tasks with the given 'id' wihtin the url.
 - PUT = The url with the 'PUT' http method will allow you to update a given task with the given 'id' within the url.
 - DELETE = The url with the 'DELETE' http method will allow you to delete a given task with the given 'id' within the url.
 
-*/tasks/*
+URL = **/tasks/**
 - POST = The url with the 'POST' http method will allow you to create a new task. The unique id will be auto generated in this case.
 
 ## Task JSON stucture
