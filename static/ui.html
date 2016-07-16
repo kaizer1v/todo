@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/bower_components/dist/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+    <script type="text/javascript" src='bower_components/jquery/dist/jquery.min.js'></script>
+    <script type="text/javascript" src='bower_components/bootstrap/dist/js/bootstrap.min.js'></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>A simple TODO</title>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <br><br><br>
+
+      <div class="input-group input-group-lg">
+        <input type="text" class="form-control" placeholder="DUU! Enter your TODO item" aria-describedby="sizing-addon1">
+        <div class="input-group-btn">
+        <!-- Buttons -->
+        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></button>
+        <button type="button" class="btn btn-danger">DO</button>
+        </div>
+      </div>
+
+<br><br>
+
+
+      <h4>TODO</h4>
+
+        <div class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Priority
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+            <li><a href="#">Priority</a></li>
+            <li><a href="#">Due Date</a></li>
+            <li><a href="#">Date Added</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </div>
+
+        <ul id='list_todo' class="list-group">
+          <li class="list-group-item">Fill form 16 ITR stuff<span style="margin-left:300px" class="label label-danger">Due on: 20th July</span></li>
+          <li class="list-group-item">Buy a mouse<span style="margin-left:100px" class="label label-danger">Due on: 10th July</span></li>
+          <li class="list-group-item">Complete Mobile Place Mocks<br><span style="margin-left:0px" class="label label-default"> - - No Date Assigned - - </span></li>
+          <li class="list-group-item">Learn HTML<span style="margin-left:800px" class="label label-danger">Due on: 26th November</span></li>
+          <li class="list-group-item">Learn Python<span style="margin-left:700px" class="label label-danger">Due on: 10th October/span></li>
+        </ul>
+
+      <br><br>
+
+      <h4 style="color:#aaffcc">Completed</h4>
+        <ul class="list-group" style="color:#ccc">
+          <li class="list-group-item"><span class="label label-success" style="padding-left:18px; padding-right:18px; margin-right:10px; background-color:#afc">7th June</span>Read Ascent of Man</li>
+          <li class="list-group-item"><span class="label label-success" style="padding-left:18px; padding-right:18px; margin-right:10px; background-color:#afc">1st June</span>Cut Hair Short</li>
+          <li class="list-group-item"><span class="label label-success" style="padding-left:18px; padding-right:18px; margin-right:10px; background-color:#afc">13th May</span>Buy a tv - micromax</li>
+          <li class="list-group-item"><span class="label label-success" style="padding-left:18px; padding-right:18px; margin-right:10px; background-color:#afc">10th May</span>Wash Black Puma Jacket</li>
+          <li class="list-group-item"><span class="label label-success" style="padding-left:18px; padding-right:18px; margin-right:10px; background-color:#afc">23rd Apr</span>Conduct User Testing for MP on Tarun</li>
+        </ul>
+
+    </div><!-- /.container -->
+
+<script type="text/javascript">
+  $(function() {
+
+    // send a request to server and get the data
+    $.ajax('/tasks/todo').done(function (result) {
+      for(var i = 0; i < result['todo'].length; i++) {
+        $('#list_todo').prepend('<li class="list-group-item">' + result[i].text + '<span style="margin-left:300px" class="label label-danger"></li>')
+      }
+      // $('#list_todo').prepend(result.text);
+    })
+
+  });
+</script>
+</body>
+</html>
