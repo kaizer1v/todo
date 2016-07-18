@@ -26,7 +26,8 @@ def get_tasks():
 	'''
 	Get all the tasks in the database
 	'''
-	return jsonify({ 'tasks': [permalinks(task) for task in data] })
+	# return jsonify({ 'tasks': [permalinks(task) for task in data] })
+	return render_template('template.html', tasks=[permalinks(task) for task in data])
 
 # Get a specific task by id
 @app.route('/tasks/<int:task_id>', methods=['GET'])

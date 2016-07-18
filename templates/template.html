@@ -2,6 +2,8 @@
 <html>
 <head>
 <title>Template</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style type="text/css">
     ul { list-style: none; }
     li a {
@@ -10,12 +12,13 @@
     }
 </style>
 <body>
-    <h1>Sample Template</h1>
+    <h1>Todo Application</h1>
     <ul id="navigation">
     {% for item in tasks %}
-        <li id="{{ item.id }}"><input type="checkbox" value="{% if item.status %} checked {% endif %}" /><a href="#">{{ item.title }}</a></li>
+        <li id="{{ item.id }}"><input type="checkbox" {% if item.status %} checked {% endif %} /><a href="{{ item.url }}">{{ item.title }}</a></li>
     {% endfor %}
     </ul>
+
 </body>
 </head>
 </html>
