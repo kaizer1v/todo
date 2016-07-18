@@ -18,7 +18,7 @@ with open('data.json') as handle:
 
 @app.route('/sample', methods=['GET'])
 def sample():
-	return render_template('sample.html', tasks=data)
+	return render_template('template.html', tasks=data)
 
 # Get all tasks (default)
 @app.route('/', methods=['GET'])
