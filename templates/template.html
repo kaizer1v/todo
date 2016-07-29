@@ -17,7 +17,6 @@ li a {
 <div class="container">
   <h1>Todo Application</h1>
   <input type="text" name="todo-title" id="task-title" />
-  <input type="text" name="todo-desc" id="task-desc" />
   <button class="addTask">Add Item</button>
   <br />
   <div class="col-md-6">
@@ -35,21 +34,18 @@ li a {
 <script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript">
 
-// Lets add a new task to the list
-// $.ajax('/tasks', {
-//   method: 'POST',
-//   dataType: 'json',
-//   contentType: 'application/json',
-//   data: JSON.stringify({
-//     title: 'Another Title',
-//     desc: 'sample description about the task.'
-//   })
-// }).done(function(result) {
-//   console.log(result);
-//   debugger;
-// }).fail(function(errorMsg) {
-//   console.log(errorMsg);
-// })
+  function textRenderer(text) {
+    var tarr1 = text.split('-'),
+      tarr2 = tarr1[1].split('@'),
+      title = tarr1[0],
+      desc = tarr2[0],
+      date = tarr2[1];
+  }
+
+  $('#task-title').on('keydown', function(event) {
+    // when user presses 'enter' key, trigger the add new item event
+    if(event.keyCode === 13) $('button.addTask').trigger('click');
+  })
 
   var Todo = function() {
     this.addItem = function(task) {
@@ -93,7 +89,6 @@ li a {
     var newTask = {};
     newTask.title = $('#task-title').val();
     newTask.desc = $('#task-desc').val();
-
     todo.addItem(newTask).done(function(result) {
       console.log(result);
       var check = (result.tasks.status === true) ? 'checked' : '';
@@ -102,7 +97,9 @@ li a {
       alert('An error occured while adding new item to your list. Please try again.');
       console.log(errMsg);
     });
-  } 
+  }
+
+
 </script>
 </body>
 </head>
