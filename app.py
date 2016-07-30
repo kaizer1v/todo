@@ -55,7 +55,7 @@ def create_task():
     data.append(new_task)
     with open('data.json', 'w') as handle:
         json.dump(data, handle)
-    return jsonify({ 'tasks': new_task }), 201
+    return jsonify({ 'tasks': permalinks(new_task) }), 201
 
 # Update an existing task by id
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
@@ -72,7 +72,7 @@ def update_task(task_id):
     task[0]['title'] = request.json.get('title', task[0]['title'])
     task[0]['desc'] = request.json.get('desc', task[0]['desc'])
     task[0]['status'] = request.json.get('status', task[0]['status'])
-    return jsonify({ 'task': task[0] })
+    return jsonify({ 'task': permalinks(task[0]) })
 
 # Delete an existing task by id
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
@@ -80,6 +80,7 @@ def delete_task(task_id):
     '''
     Given a task id, remove the task and update the database
     '''
+    print(task_id)
     task = [task for task in data if task['id'] == task_id]
     if len(task) == 0: abort(404)
     data.remove(task[0])
