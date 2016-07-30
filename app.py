@@ -27,7 +27,8 @@ def get_tasks():
     Get all the tasks in the database
     '''
     # return jsonify({ 'tasks': [permalinks(task) for task in data] })
-    return render_template('template.html', tasks=[permalinks(task) for task in data])
+    sortedList = sorted(data, key=lambda task: task['id'], reverse=True)
+    return render_template('template.html', tasks=[permalinks(task) for task in sortedList])
 
 # Get a specific task by id
 @app.route('/tasks/<int:task_id>', methods=['GET'])
@@ -42,6 +43,7 @@ def create_task():
     '''
     Add a new task and update the database
     '''
+    if data[-1]['id'] + 1 > 10: return 201
     if not request.get_json(force=True) or not 'title' in request.get_json(force=True):
         abort(404)
     new_task = {

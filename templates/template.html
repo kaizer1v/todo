@@ -16,14 +16,26 @@ li a {
 <body>
 <div class="container">
   <h1>Todo Application</h1>
-  <input type="text" name="todo-title" id="task-title" />
-  <button class="addTask">Add Item</button>
+  <div class="row">
+    <div class="col-xs-5">
+      <input type="text" class="form-control" id="txt_newTask" placeholder="Task...">
+    </div>
+    <div class="col-xs-3">
+      <button class="addTask btn btn-primary">Add Item</button>
+    </div>
+  </div>
+
   <br />
   <div class="col-md-6">
     <div class="row list-section">
       <ul id="todo-tasks" class="list-group">
       {% for item in tasks %}
-        <li class="list-group-item" id="{{ item.id }}"><input type="checkbox" {% if item.status %} checked {% endif %} /><a href="{{ item.url }}">{{ item.title }}</a></li>
+        <li class="checkbox list-group-item" id="{{ item.id }}">
+          <label>
+            <input type="checkbox" {% if item.status %} checked {% endif %} />
+            <a href="{{ item.url }}">{{ item.title }}</a>
+          </label>
+        </li>
       {% endfor %}
       </ul>
     </div>
@@ -34,6 +46,8 @@ li a {
 <script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript">
 
+  $('input[type=text]').focus();
+
   function textRenderer(text) {
     var tarr1 = text.split('-'),
       tarr2 = tarr1[1].split('@'),
@@ -42,7 +56,7 @@ li a {
       date = tarr2[1];
   }
 
-  $('#task-title').on('keydown', function(event) {
+  $('#txt_newTask').on('keydown', function(event) {
     // when user presses 'enter' key, trigger the add new item event
     if(event.keyCode === 13) $('button.addTask').trigger('click');
   })
@@ -86,13 +100,12 @@ li a {
 
   // Event Handlers
   function ui_addTask(event) {
-    var newTask = {};
-    newTask.title = $('#task-title').val();
-    newTask.desc = $('#task-desc').val();
+    var newTask = {}, txtbox = $('#txt_newTask');
+    newTask.title = txtbox.val();
     todo.addItem(newTask).done(function(result) {
-      console.log(result);
       var check = (result.tasks.status === true) ? 'checked' : '';
-      $("#todo-tasks").append('<li class="list-group-item" id="'+ result.tasks.id +'"><input type="checkbox" /><a href="'+ result.tasks.url +'">'+ result.tasks.title +'</a></li>');
+      $("#todo-tasks").prepend('<li class="checkbox list-group-item" id="'+ result.tasks.id +'"><label><input type="checkbox" /><a href="'+ result.tasks.url +'">'+ result.tasks.title +'</a></label></li>');
+      txtbox.val("");
     }).fail(function(errMsg) {
       alert('An error occured while adding new item to your list. Please try again.');
       console.log(errMsg);
