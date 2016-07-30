@@ -8,25 +8,46 @@
 <style type="text/css">
 ul { list-style: none; }
 li a {
-    text-decoration: none;
-    color: #333;
+  text-decoration: none;
+  color: #333;
 }
+.list-section { margin-top: 30px; }
+.glyphicon-trash { float: right; cursor: pointer; }
+.strikethrough { text-decoration: line-through; }
 </style>
 <body>
 <div class="container">
-    <h1>Todo Application</h1>
-    <div class="col-md-6">
-        <div class="row">
-            <ul class="list-group">
-            {% for item in tasks %}
-                <li class="list-group-item" id="{{ item.id }}"><input type="checkbox" {% if item.status %} checked {% endif %} /><a href="{{ item.url }}">{{ item.title }}</a></li>
-            {% endfor %}
-            </ul>
-        </div>
-    </div>    
+  <h1>Todo Application</h1>
+  <div class="row">
+    <div class="col-xs-5">
+      <input type="text" class="form-control" id="txt_newTask" placeholder="Task...">
+    </div>
+    <div class="col-xs-3">
+      <button class="addTask btn btn-primary">Add</button>
+    </div>
+  </div>
+
+  <br />
+  <div class="col-md-6">
+    <div class="row list-section">
+      <ul id="todo-tasks" class="list-group">
+      {% for item in tasks %}
+        <li class="checkbox list-group-item" id="{{ item.id }}">
+          <label>
+            <input type="checkbox" {% if item.status %} checked {% endif %} />
+            <a href="{{ item.url }}" class="{% if item.status %} strikethrough {% endif %}">{{ item.title }}</a>
+          </label>
+          <span class="glyphicon glyphicon-trash align-right"></span>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='res/js/todo.js') }}"></script>
 </body>
 </head>
 </html>
